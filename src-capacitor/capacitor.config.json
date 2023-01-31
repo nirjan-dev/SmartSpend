@@ -1,0 +1,7 @@
+{
+  "appId": "com.nirjan.smartspend",
+  "appName": "SmartSpend",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "smart-spend",
+  "version": "0.0.1",
+  "description": "An app built to control spending and impulse buys developed by Nirjan Khadka",
+  "author": "Nirjan Khadka",
+  "private": true,
+  "dependencies": {
+    "@capacitor/android": "^2.5.0",
+    "@capacitor/cli": "^2.0.0",
+    "@capacitor/core": "^2.0.0"
+  }
+}

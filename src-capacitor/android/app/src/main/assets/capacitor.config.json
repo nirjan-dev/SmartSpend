@@ -1,0 +1,10 @@
+{
+  "appId": "com.nirjan.smartspend",
+  "appName": "SmartSpend",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "server": {
+    "url": "http://192.168.1.74:9500"
+  }
+}

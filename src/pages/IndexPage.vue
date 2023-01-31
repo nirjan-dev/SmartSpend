@@ -1,42 +1,56 @@
 <template>
   <q-page class="row items-center justify-evenly">
-    <example-component
-      title="Example component"
-      active
-      :todos="todos"
-      :meta="meta"
-    ></example-component>
+    <!-- Title -->
+    <h1 class="text-h5">Please Enter your monthly salary</h1>
+
+    <!-- Form to enter salary -->
+    <q-form class="col-6">
+      <q-input
+        v-model="salary"
+        label="Salary"
+        type="number"
+        filled
+        class="q-mb-md"
+      />
+
+      <q-input
+        v-model="hours"
+        label="Working hours per week"
+        type="number"
+        filled
+        class="q-mb-md"
+      />
+
+      <q-input
+        v-model="days"
+        label="Working days per week"
+        type="number"
+        filled
+        class="q-mb-md"
+      />
+
+      <q-btn
+        label="Submit"
+        type="submit"
+        color="primary"
+        class="q-mb-md"
+        @click="submitSalary"
+      />
+    </q-form>
+    <!-- Form to enter expenses -->
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { Todo, Meta } from 'components/models';
-import ExampleComponent from 'components/ExampleComponent.vue';
 import { ref } from 'vue';
 
-const todos = ref<Todo[]>([
-  {
-    id: 1,
-    content: 'ct1'
-  },
-  {
-    id: 2,
-    content: 'ct2'
-  },
-  {
-    id: 3,
-    content: 'ct3'
-  },
-  {
-    id: 4,
-    content: 'ct4'
-  },
-  {
-    id: 5,
-    content: 'ct5'
-  }
-]);
-const meta = ref<Meta>({
-  totalCount: 1200
-});
+const salary = ref(0);
+const hours = ref(40);
+const days = ref(5);
+
+const submitSalary = () => {
+  alert(
+    `Your salary is ${salary.value} and you work ${hours.value} hours per week and ${days.value} days per week`
+  );
+};
 </script>
