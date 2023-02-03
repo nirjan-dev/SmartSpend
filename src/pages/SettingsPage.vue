@@ -7,7 +7,7 @@
     <q-form class="col-6">
       <q-input
         v-model="salary"
-        label="Salary"
+        label="Salary per month"
         type="number"
         filled
         class="q-mb-md"
@@ -24,6 +24,14 @@
       <q-input
         v-model="workDays"
         label="Working days per week"
+        type="number"
+        filled
+        class="q-mb-md"
+      />
+
+      <q-input
+        v-model="workWeeks"
+        label="Working weeks per month"
         type="number"
         filled
         class="q-mb-md"
@@ -47,6 +55,7 @@ import { onMounted, ref } from 'vue';
 
 let salary = ref(0);
 let workHours = ref(40);
+let workWeeks = ref(4);
 let workDays = ref(5);
 
 onMounted(() => {
@@ -55,14 +64,14 @@ onMounted(() => {
   if (salaryDetails) {
     salary.value = salaryDetails.salary;
     workHours.value = salaryDetails.workHours;
-    workDays.value = salaryDetails.workDays;
+    workWeeks.value = salaryDetails.workWeeks;
   }
 });
 
 const submitSalary = (e: Event) => {
   e.preventDefault();
 
-  if (!salary.value || !workHours.value || !workDays.value) {
+  if (!salary.value || !workHours.value || !workWeeks.value) {
     alert('Please enter all the details');
     return;
   }
@@ -70,6 +79,7 @@ const submitSalary = (e: Event) => {
   const updatedSalary = saveSalaryDetails({
     salary: salary.value,
     workHours: workHours.value,
+    workWeeks: workWeeks.value,
     workDays: workDays.value,
   });
 

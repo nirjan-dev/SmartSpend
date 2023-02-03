@@ -1,3 +1,4 @@
+import { getSalaryDetails } from 'src/api/SalaryService';
 import { PlannedExpense } from 'src/types/expenses';
 import { SalaryDetails } from 'src/types/salary';
 
@@ -67,48 +68,92 @@ export const updatePlannedExpense = (expense: PlannedExpense) => {
   return updatedPlannedExpenses;
 };
 
-export const getTimeFromExpense = (
-  expense: PlannedExpense,
-  salaryDetails: SalaryDetails
-) => {
-  const { salary, workHours, workDays } = salaryDetails;
-  const { amount } = expense;
+export const getTimeFromAmount = (amount: number) => {
+  const salaryDetails = getSalaryDetails();
 
-  const workHoursPerMonth = workHours * workDays;
-  const workHoursPerYear = workHoursPerMonth * 12;
+  if (!salaryDetails) {
+    return null;
+  }
 
-  const salaryPerHour = salary / workHoursPerYear;
+  const hoursFromAmount = getHoursFromAmount(amount, salaryDetails);
 
-  const timeToPay = amount / salaryPerHour;
+  const timeWithSeparators = getTimeFromHours(hoursFromAmount, salaryDetails);
 
-  return getFormattedTime(timeToPay);
+  return timeWithSeparators;
 };
 
-export const getFormattedTime = (time: number) => {
-  // return time in the biggest to smallest units (hours, days, months, years)
+export const getHoursFromAmount = (
+  amount: number,
+  salaryDetails: SalaryDetails
+) => {
+  const { salary, workHours, workWeeks } = salaryDetails;
 
-  const years = Math.floor(time / 8760);
-  const months = Math.floor((time % 8760) / 730);
-  const days = Math.floor(((time % 8760) % 730) / 24);
-  const hours = Math.floor((((time % 8760) % 730) % 24) / 1);
+  const salaryPerHour = salary / (workHours * workWeeks);
 
-  let finalString = '';
+  const hoursToPay = amount / salaryPerHour;
 
-  if (years > 0) {
-    finalString += `${years} years `;
+  return hoursToPay;
+};
+
+export const getTimeFromHours = (
+  hours: number,
+  salaryDetails: SalaryDetails
+) => {
+  const {
+    workDays: workDaysPerWeek,
+    workHours: workHoursPerWeek,
+    workWeeks: numberOfWorkingWeeks,
+  } = salaryDetails;
+
+  const hoursPerDay = workHoursPerWeek / workDaysPerWeek; // 8
+  const hoursPerWeek = workHoursPerWeek; // 40
+  const hoursPerMonth = hoursPerWeek * numberOfWorkingWeeks; // 160
+  const hoursPerYear = hoursPerMonth * 12; // 1920
+
+  const years = Math.floor(hours / hoursPerYear);
+  const months = Math.floor((hours - years * hoursPerYear) / hoursPerMonth);
+  const weeks = Math.floor(
+    (hours - years * hoursPerYear - months * hoursPerMonth) / hoursPerWeek
+  );
+  const days = Math.floor(
+    (hours -
+      years * hoursPerYear -
+      months * hoursPerMonth -
+      weeks * hoursPerWeek) /
+      hoursPerDay
+  );
+  const hoursLeft =
+    hours -
+    years * hoursPerYear -
+    months * hoursPerMonth -
+    weeks * hoursPerWeek -
+    days * hoursPerDay;
+
+  const timeWithSeparators = `${years} years ${months} months ${weeks} weeks ${days} days ${hoursLeft} hours`;
+
+  return timeWithSeparators;
+};
+
+export const getAmountFromTime = (time: number) => {
+  const salaryDetails = getSalaryDetails();
+
+  if (!salaryDetails) {
+    return null;
   }
 
-  if (months > 0) {
-    finalString += `${months} months `;
-  }
+  const { salary, workHours, workWeeks } = salaryDetails;
 
-  if (days > 0) {
-    finalString += `${days} days `;
-  }
+  const salaryPerHour = salary / (workHours * workWeeks);
 
-  if (hours > 0) {
-    finalString += `${hours} hours `;
-  }
+  const amountToPay = time * salaryPerHour;
 
-  return finalString;
+  return amountToPay;
+};
+
+export const getFormattedTime = (
+  hours: number,
+  workingHoursPerWeek: number,
+  workingDaysPerWeek: number
+) => {
+  return '0';
 };

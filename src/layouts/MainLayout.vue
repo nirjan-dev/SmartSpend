@@ -6,12 +6,18 @@
           <q-toolbar-title class="text-center">Smart Spend</q-toolbar-title>
         </q-toolbar>
       </q-header>
-      <router-view />
+
+      <router-view class="q-px-md" />
 
       <q-footer elevated>
         <q-tabs>
           <q-route-tab to="/" icon="home" label="Home" />
           <q-route-tab to="/history" icon="history" label="History" />
+          <q-route-tab
+            to="/converter"
+            icon="currency_exchange"
+            label="Converter"
+          />
           <q-route-tab to="/settings" icon="settings" label="Settings" />
         </q-tabs>
       </q-footer>

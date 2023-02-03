@@ -41,7 +41,7 @@
         <q-item-section>
           <q-item-label>{{ plannedExpense.name }}</q-item-label>
           <q-item-label caption>
-            {{ expenseToTime(plannedExpense) }}
+            {{ expenseToTime(plannedExpense.amount) }}
           </q-item-label>
 
           <q-item-label caption>
@@ -50,7 +50,7 @@
             </a>
           </q-item-label>
 
-          <q-item-label caption> {{ plannedExpense.amount }} $ </q-item-label>
+          <q-item-label caption> {{ plannedExpense.amount }} </q-item-label>
         </q-item-section>
         <q-item-section side>
           <q-btn
@@ -71,7 +71,7 @@ import { useRouter } from 'vue-router';
 import {
   addPlannedExpense,
   getPlannedExpenses,
-  getTimeFromExpense,
+  getTimeFromAmount,
   removePlannedExpense,
 } from 'src/api/expenseService';
 import { getSalaryDetails } from 'src/api/SalaryService';
@@ -96,8 +96,8 @@ onMounted(() => {
   plannedExpenses.value = getPlannedExpenses();
 });
 
-const expenseToTime = (expense: PlannedExpense) => {
-  const time = getTimeFromExpense(expense, salaryDetails);
+const expenseToTime = (amount: number) => {
+  const time = getTimeFromAmount(amount);
   return time;
 };
 
