@@ -4,26 +4,36 @@
     <h1 class="text-h5">Planned expenses</h1>
 
     <!-- List of planned expenses -->
-    <q-list bordered class="q-mt-md">
+    <q-list class="q-mt-md" separator>
       <q-item
         v-for="plannedExpense in plannedExpenses"
         :key="plannedExpense.id"
+        class="q-mb-md border-bottom"
       >
-        <q-item-section class="q-mb-md">
-          <q-item-label>{{ plannedExpense.name }}</q-item-label>
-          <q-item-label caption>
+        <q-item-section class="q-py-md">
+          <q-item-label class="text-h6 q-mb-sm">{{
+            plannedExpense.name
+          }}</q-item-label>
+          <q-item-label class="text-negative text-bold">
+            {{ plannedExpense.amount }} -
             {{ expenseToTime(plannedExpense.amount) }}
           </q-item-label>
 
-          <q-item-label caption>
+          <q-item-label caption class="q-mb-sm">
             <a :href="plannedExpense.link" target="_blank">
               {{ plannedExpense.link }}
             </a>
           </q-item-label>
-
-          <q-item-label caption> {{ plannedExpense.amount }} </q-item-label>
         </q-item-section>
         <q-item-section side>
+          <q-btn
+            round
+            color="primary"
+            icon="edit"
+            @click="onEditPlannedExpenseClick(plannedExpense)"
+            class="q-mb-md"
+          />
+
           <q-btn
             round
             color="negative"

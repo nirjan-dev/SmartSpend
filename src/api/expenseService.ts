@@ -129,11 +129,27 @@ export const getTimeFromHours = (
     weeks * hoursPerWeek -
     days * hoursPerDay;
 
-  const timeWithSeparators = `${years.toFixed(1)} years ${months.toFixed(
-    1
-  )} months ${weeks.toFixed(1)} weeks ${days.toFixed(
-    1
-  )} days ${hoursLeft.toFixed(1)} hours`;
+  let timeWithSeparators = '';
+
+  if (years) {
+    timeWithSeparators += `${years.toFixed(2)} years `;
+  }
+
+  if (months) {
+    timeWithSeparators += `${months.toFixed(2)} months `;
+  }
+
+  if (weeks) {
+    timeWithSeparators += `${weeks.toFixed(2)} weeks `;
+  }
+
+  if (days) {
+    timeWithSeparators += `${days.toFixed(2)} days `;
+  }
+
+  if (hoursLeft) {
+    timeWithSeparators += `${hoursLeft.toFixed(2)} hours `;
+  }
 
   return timeWithSeparators;
 };
@@ -152,12 +168,4 @@ export const getAmountFromTime = (time: number) => {
   const amountToPay = time * salaryPerHour;
 
   return amountToPay;
-};
-
-export const getFormattedTime = (
-  hours: number,
-  workingHoursPerWeek: number,
-  workingDaysPerWeek: number
-) => {
-  return '0';
 };
