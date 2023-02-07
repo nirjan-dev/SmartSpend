@@ -3,42 +3,13 @@
     <!-- Title -->
     <h1 class="text-h5">Planned expenses</h1>
 
-    <!-- Form to enter expenses -->
-    <q-form>
-      <q-input
-        v-model="expenseName"
-        label="Expense Name"
-        type="text"
-        filled
-        class="q-mb-md"
-      />
-
-      <q-input
-        v-model="expenseAmount"
-        label="Expense Amount"
-        type="number"
-        filled
-        class="q-mb-md"
-      />
-
-      <q-input v-model="link" label="Link" type="text" filled class="q-mb-md" />
-
-      <q-btn
-        label="Submit"
-        type="submit"
-        color="primary"
-        class="q-mb-md"
-        @click="submitExpense"
-      />
-    </q-form>
-
     <!-- List of planned expenses -->
     <q-list bordered class="q-mt-md">
       <q-item
         v-for="plannedExpense in plannedExpenses"
         :key="plannedExpense.id"
       >
-        <q-item-section>
+        <q-item-section class="q-mb-md">
           <q-item-label>{{ plannedExpense.name }}</q-item-label>
           <q-item-label caption>
             {{ expenseToTime(plannedExpense.amount) }}
@@ -62,6 +33,15 @@
         </q-item-section>
       </q-item>
     </q-list>
+
+    <q-page-sticky position="bottom-right" :offset="[18, 18]">
+      <q-btn
+        fab
+        icon="add"
+        color="accent"
+        @click="onNewPlannedExpenseClick()"
+      />
+    </q-page-sticky>
   </q-page>
 </template>
 
@@ -77,11 +57,12 @@ import {
 import { getSalaryDetails } from 'src/api/SalaryService';
 import { PlannedExpense } from 'src/types/expenses';
 import { SalaryDetails } from 'src/types/salary';
+import { useQuasar } from 'quasar';
+import NewPlannedExpenseDialog from 'components/NewPlannedExpenseDialog.vue';
 
-const expenseName = ref(null);
-const expenseAmount = ref(null);
-const link = ref(null);
 const plannedExpenses: Ref<PlannedExpense[]> = ref([]);
+const $q = useQuasar();
+
 let salaryDetails: SalaryDetails;
 
 onMounted(() => {
@@ -101,31 +82,6 @@ const expenseToTime = (amount: number) => {
   return time;
 };
 
-const submitExpense = (e: Event) => {
-  e.preventDefault();
-  if (!expenseName.value || !expenseAmount.value || !link.value) {
-    alert('Please enter all the details');
-    return;
-  }
-
-  const plannedExpense = {
-    name: expenseName.value,
-    amount: expenseAmount.value,
-    link: link.value,
-  };
-
-  const newPlannedExpense = addPlannedExpense(plannedExpense);
-
-  if (!newPlannedExpense) {
-    alert('Error adding expense');
-    return;
-  }
-
-  plannedExpenses.value.push(newPlannedExpense);
-
-  alert('Expense added successfully');
-};
-
 const deleteExpense = (plannedExpense: PlannedExpense) => {
   const updatedPlannedExpenses = removePlannedExpense(plannedExpense);
 
@@ -135,5 +91,36 @@ const deleteExpense = (plannedExpense: PlannedExpense) => {
   }
 
   plannedExpenses.value = updatedPlannedExpenses;
+};
+
+const onNewPlannedExpenseClick = () => {
+  $q.dialog({
+    title: 'New Planned Expense',
+    message: 'Enter the details of the planned expense',
+    component: NewPlannedExpenseDialog,
+    cancel: true,
+    persistent: true,
+  }).onOk(
+    (data: { expenseName: string; expenseAmount: number; link: string }) => {
+      console.log(data);
+
+      const plannedExpense = {
+        name: data.expenseName,
+        amount: data.expenseAmount,
+        link: data.link,
+      };
+
+      const newPlannedExpense = addPlannedExpense(plannedExpense);
+
+      if (!newPlannedExpense) {
+        alert('Error adding expense');
+        return;
+      }
+
+      plannedExpenses.value.push(newPlannedExpense);
+
+      alert('Expense added successfully');
+    }
+  );
 };
 </script>
