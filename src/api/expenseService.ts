@@ -129,7 +129,11 @@ export const getTimeFromHours = (
     weeks * hoursPerWeek -
     days * hoursPerDay;
 
-  const timeWithSeparators = `${years} years ${months} months ${weeks} weeks ${days} days ${hoursLeft} hours`;
+  const timeWithSeparators = `${years.toFixed(1)} years ${months.toFixed(
+    1
+  )} months ${weeks.toFixed(1)} weeks ${days.toFixed(
+    1
+  )} days ${hoursLeft.toFixed(1)} hours`;
 
   return timeWithSeparators;
 };
