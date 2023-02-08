@@ -63,12 +63,13 @@ import {
   getPlannedExpenses,
   getTimeFromAmount,
   removePlannedExpense,
+  updatePlannedExpense,
 } from 'src/api/expenseService';
 import { getSalaryDetails } from 'src/api/SalaryService';
 import { PlannedExpense } from 'src/types/expenses';
 import { SalaryDetails } from 'src/types/salary';
 import { useQuasar } from 'quasar';
-import NewPlannedExpenseDialog from 'components/NewPlannedExpenseDialog.vue';
+import plannedExpenseDialog from 'src/components/plannedExpenseDialog.vue';
 
 const plannedExpenses: Ref<PlannedExpense[]> = ref([]);
 const $q = useQuasar();
@@ -105,15 +106,12 @@ const deleteExpense = (plannedExpense: PlannedExpense) => {
 
 const onNewPlannedExpenseClick = () => {
   $q.dialog({
-    title: 'New Planned Expense',
-    message: 'Enter the details of the planned expense',
-    component: NewPlannedExpenseDialog,
-    cancel: true,
-    persistent: true,
+    component: plannedExpenseDialog,
+    componentProps: {
+      mode: 'add',
+    },
   }).onOk(
     (data: { expenseName: string; expenseAmount: number; link: string }) => {
-      console.log(data);
-
       const plannedExpense = {
         name: data.expenseName,
         amount: data.expenseAmount,
@@ -130,6 +128,42 @@ const onNewPlannedExpenseClick = () => {
       plannedExpenses.value.push(newPlannedExpense);
 
       alert('Expense added successfully');
+    }
+  );
+};
+
+const onEditPlannedExpenseClick = (plannedExpense: PlannedExpense) => {
+  // edit the planned expense using the plannedExpense Dialog
+
+  $q.dialog({
+    component: plannedExpenseDialog,
+    componentProps: {
+      ...plannedExpense,
+      mode: 'edit',
+    },
+  }).onOk(
+    (data: { expenseName: string; expenseAmount: number; link: string }) => {
+      console.log(data);
+
+      const updatedPlannedExpense = {
+        ...plannedExpense,
+        name: data.expenseName,
+        amount: data.expenseAmount,
+        link: data.link,
+      };
+
+      const updatedPlannedExpenses = updatePlannedExpense(
+        updatedPlannedExpense
+      );
+
+      if (!updatedPlannedExpenses) {
+        alert('Error updating expense');
+        return;
+      }
+
+      plannedExpenses.value = updatedPlannedExpenses;
+
+      alert('Expense updated successfully');
     }
   );
 };

@@ -3,13 +3,13 @@
     <q-dialog ref="dialogRef" @hide="onDialogHide">
       <q-card class="q-dialog-plugin">
         <q-card-section class="row items-center">
-          <div class="text-h6">Add a New Planned Expense</div>
+          <div class="text-h6">{{ title }}</div>
         </q-card-section>
 
         <q-card-section>
           <q-form>
             <q-input
-              v-model="expenseName"
+              v-model="name"
               label="Expense Name"
               type="text"
               filled
@@ -17,7 +17,7 @@
             />
 
             <q-input
-              v-model="expenseAmount"
+              v-model="amount"
               label="Expense Amount"
               type="number"
               filled
@@ -34,7 +34,7 @@
           </q-form>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn color="primary" label="OK" @click="onOKClick" />
+          <q-btn color="primary" label="Save" @click="onOKClick" />
           <q-btn
             color="default"
             text-color="dark"
@@ -48,20 +48,33 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useDialogPluginComponent } from 'quasar';
 
 const { dialogRef, onDialogOK, onDialogCancel, onDialogHide } =
   useDialogPluginComponent();
 
-const expenseName = ref(null);
-const expenseAmount = ref(null);
-const link = ref(null);
+const props = defineProps<{
+  name: string;
+  amount: number;
+  link: string;
+  mode: 'add' | 'edit';
+}>();
+
+const name = ref(props.name ?? null);
+const amount = ref(props.amount ?? null);
+const link = ref(props.link ?? null);
+
+const title = computed(() => {
+  return props.mode === 'add'
+    ? 'Add a New Planned Expense'
+    : 'Edit Planned Expense';
+});
 
 function onOKClick() {
   onDialogOK({
-    expenseName: expenseName.value,
-    expenseAmount: expenseAmount.value,
+    expenseName: name.value,
+    expenseAmount: amount.value,
     link: link.value,
   });
 }
