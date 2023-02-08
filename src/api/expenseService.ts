@@ -1,23 +1,26 @@
+import { Preferences } from '@capacitor/preferences';
 import { getSalaryDetails } from 'src/api/SalaryService';
 import { PlannedExpense } from 'src/types/expenses';
 import { SalaryDetails } from 'src/types/salary';
 
-export const getPlannedExpenses = () => {
+export const getPlannedExpenses = async () => {
   let plannedExpenses: PlannedExpense[] = [];
 
-  const plannedExpensesFromStorage = localStorage.getItem(
-    'SmartSpendPlannedExpenses'
-  );
+  const plannedExpensesFromStorage = await Preferences.get({
+    key: 'SmartSpendPlannedExpenses',
+  });
 
-  if (plannedExpensesFromStorage) {
-    plannedExpenses = JSON.parse(plannedExpensesFromStorage);
+  if (plannedExpensesFromStorage.value) {
+    plannedExpenses = JSON.parse(plannedExpensesFromStorage.value);
   }
 
   return plannedExpenses;
 };
 
-export const addPlannedExpense = (expense: Omit<PlannedExpense, 'id'>) => {
-  const plannedExpenses = getPlannedExpenses();
+export const addPlannedExpense = async (
+  expense: Omit<PlannedExpense, 'id'>
+) => {
+  const plannedExpenses = await getPlannedExpenses();
 
   const expenseWithId = {
     ...expense,
@@ -26,31 +29,31 @@ export const addPlannedExpense = (expense: Omit<PlannedExpense, 'id'>) => {
 
   plannedExpenses.push(expenseWithId);
 
-  localStorage.setItem(
-    'SmartSpendPlannedExpenses',
-    JSON.stringify(plannedExpenses)
-  );
+  await Preferences.set({
+    key: 'SmartSpendPlannedExpenses',
+    value: JSON.stringify(plannedExpenses),
+  });
 
   return expenseWithId;
 };
 
-export const removePlannedExpense = (expense: PlannedExpense) => {
-  const plannedExpenses = getPlannedExpenses();
+export const removePlannedExpense = async (expense: PlannedExpense) => {
+  const plannedExpenses = await getPlannedExpenses();
 
   const filteredPlannedExpenses = plannedExpenses.filter(
     (expenseItem) => expenseItem.id !== expense.id
   );
 
-  localStorage.setItem(
-    'SmartSpendPlannedExpenses',
-    JSON.stringify(filteredPlannedExpenses)
-  );
+  await Preferences.set({
+    key: 'SmartSpendPlannedExpenses',
+    value: JSON.stringify(filteredPlannedExpenses),
+  });
 
   return filteredPlannedExpenses;
 };
 
-export const updatePlannedExpense = (expense: PlannedExpense) => {
-  const plannedExpenses = getPlannedExpenses();
+export const updatePlannedExpense = async (expense: PlannedExpense) => {
+  const plannedExpenses = await getPlannedExpenses();
 
   const updatedPlannedExpenses = plannedExpenses.map((expenseItem) => {
     if (expenseItem.id === expense.id) {
@@ -60,17 +63,18 @@ export const updatePlannedExpense = (expense: PlannedExpense) => {
     return expenseItem;
   });
 
-  localStorage.setItem(
-    'SmartSpendPlannedExpenses',
-    JSON.stringify(updatedPlannedExpenses)
-  );
+  await Preferences.set({
+    key: 'SmartSpendPlannedExpenses',
+    value: JSON.stringify(updatedPlannedExpenses),
+  });
 
   return updatedPlannedExpenses;
 };
 
-export const getTimeFromAmount = (amount: number) => {
-  const salaryDetails = getSalaryDetails();
-
+export const getTimeFromAmount = (
+  amount: number,
+  salaryDetails: SalaryDetails
+) => {
   if (!salaryDetails) {
     return null;
   }
@@ -154,9 +158,10 @@ export const getTimeFromHours = (
   return timeWithSeparators;
 };
 
-export const getAmountFromTime = (time: number) => {
-  const salaryDetails = getSalaryDetails();
-
+export const getAmountFromTime = (
+  time: number,
+  salaryDetails: SalaryDetails
+) => {
   if (!salaryDetails) {
     return null;
   }

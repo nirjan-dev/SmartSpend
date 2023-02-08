@@ -61,8 +61,8 @@ let workDays = ref(5);
 
 const $q = useQuasar();
 
-onMounted(() => {
-  const salaryDetails = getSalaryDetails();
+onMounted(async () => {
+  const salaryDetails = await getSalaryDetails();
 
   if (salaryDetails) {
     salary.value = salaryDetails.salary;
@@ -71,7 +71,7 @@ onMounted(() => {
   }
 });
 
-const submitSalary = (e: Event) => {
+const submitSalary = async (e: Event) => {
   e.preventDefault();
 
   if (!salary.value || !workHours.value || !workWeeks.value) {
@@ -83,7 +83,7 @@ const submitSalary = (e: Event) => {
     return;
   }
 
-  const updatedSalary = saveSalaryDetails({
+  const updatedSalary = await saveSalaryDetails({
     salary: salary.value,
     workHours: workHours.value,
     workWeeks: workWeeks.value,

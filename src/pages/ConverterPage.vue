@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="text-h5">Convert between money and time</h1>
+    <h1 class="text-h5">Convert money to time</h1>
 
     <q-form class="col-6">
       <q-input
@@ -77,8 +77,12 @@
 </template>
 
 <script setup lang="ts">
+import { useQuasar } from 'quasar';
 import { getAmountFromTime, getTimeFromAmount } from 'src/api/expenseService';
-import { ref } from 'vue';
+import { getSalaryDetails } from 'src/api/SalaryService';
+import { SalaryDetails } from 'src/types/salary';
+import { onMounted, reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const amount = ref(0);
 const time = ref('');
@@ -87,6 +91,25 @@ const days = ref(0);
 const weeks = ref(0);
 const months = ref(0);
 const years = ref(0);
+const $q = useQuasar();
+const router = useRouter();
+let salaryDetails: SalaryDetails = reactive({} as SalaryDetails);
+
+onMounted(async () => {
+  const storedSalaryDetails = await getSalaryDetails();
+  if (!storedSalaryDetails) {
+    $q.notify({
+      message: 'Please enter your salary details',
+      color: 'warning',
+      icon: 'warning',
+      position: 'top',
+    });
+    router.push('/settings');
+    return;
+  }
+
+  salaryDetails = reactive(storedSalaryDetails);
+});
 
 const getTimeObjectFromTotalTime = (totalTime: string) => {
   const years = Number(totalTime.split('years')[0]);
@@ -105,7 +128,7 @@ const getTimeObjectFromTotalTime = (totalTime: string) => {
 };
 
 const onAmountUpdate = (value: number) => {
-  const totalTime = getTimeFromAmount(Number(value)) ?? '0';
+  const totalTime = getTimeFromAmount(Number(value), salaryDetails) ?? '0';
 
   const timeSections = getTimeObjectFromTotalTime(totalTime);
 
@@ -125,7 +148,7 @@ const onTimeUpdate = () => {
     months.value * 24 * 7 * 4 +
     years.value * 24 * 7 * 4 * 12;
 
-  amount.value = getAmountFromTime(totalTimeInHours) || 0;
+  amount.value = getAmountFromTime(totalTimeInHours, salaryDetails) || 0;
 };
 </script>
 

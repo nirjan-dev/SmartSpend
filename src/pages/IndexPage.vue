@@ -73,12 +73,13 @@ import plannedExpenseDialog from 'src/components/plannedExpenseDialog.vue';
 
 const plannedExpenses: Ref<PlannedExpense[]> = ref([]);
 const $q = useQuasar();
+const router = useRouter();
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let salaryDetails: SalaryDetails;
 
-onMounted(() => {
-  const storedSalaryDetails = getSalaryDetails();
+onMounted(async () => {
+  const storedSalaryDetails = await getSalaryDetails();
   if (!storedSalaryDetails) {
     $q.notify({
       message: 'Please enter your salary details',
@@ -86,21 +87,21 @@ onMounted(() => {
       icon: 'warning',
       position: 'top',
     });
-    useRouter().push('/settings');
+    router.push('/settings');
     return;
   }
 
   salaryDetails = reactive(storedSalaryDetails);
-  plannedExpenses.value = getPlannedExpenses();
+  plannedExpenses.value = await getPlannedExpenses();
 });
 
 const expenseToTime = (amount: number) => {
-  const time = getTimeFromAmount(amount);
+  const time = getTimeFromAmount(amount, salaryDetails);
   return time;
 };
 
-const deleteExpense = (plannedExpense: PlannedExpense) => {
-  const updatedPlannedExpenses = removePlannedExpense(plannedExpense);
+const deleteExpense = async (plannedExpense: PlannedExpense) => {
+  const updatedPlannedExpenses = await removePlannedExpense(plannedExpense);
 
   if (!updatedPlannedExpenses) {
     $q.notify({
@@ -122,14 +123,18 @@ const onNewPlannedExpenseClick = () => {
       mode: 'add',
     },
   }).onOk(
-    (data: { expenseName: string; expenseAmount: number; link: string }) => {
+    async (data: {
+      expenseName: string;
+      expenseAmount: number;
+      link: string;
+    }) => {
       const plannedExpense = {
         name: data.expenseName,
         amount: data.expenseAmount,
         link: data.link,
       };
 
-      const newPlannedExpense = addPlannedExpense(plannedExpense);
+      const newPlannedExpense = await addPlannedExpense(plannedExpense);
 
       if (!newPlannedExpense) {
         $q.notify({
@@ -163,7 +168,11 @@ const onEditPlannedExpenseClick = (plannedExpense: PlannedExpense) => {
       mode: 'edit',
     },
   }).onOk(
-    (data: { expenseName: string; expenseAmount: number; link: string }) => {
+    async (data: {
+      expenseName: string;
+      expenseAmount: number;
+      link: string;
+    }) => {
       console.log(data);
 
       const updatedPlannedExpense = {
@@ -173,7 +182,7 @@ const onEditPlannedExpenseClick = (plannedExpense: PlannedExpense) => {
         link: data.link,
       };
 
-      const updatedPlannedExpenses = updatePlannedExpense(
+      const updatedPlannedExpenses = await updatePlannedExpense(
         updatedPlannedExpense
       );
 
