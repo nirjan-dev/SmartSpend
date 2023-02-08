@@ -1,10 +1,10 @@
 <template>
-  <q-page class="row items-center justify-evenly">
+  <q-page>
     <!-- Title -->
     <h1 class="text-h5">Please Enter your monthly salary</h1>
 
     <!-- Form to enter salary -->
-    <q-form class="col-6">
+    <q-form>
       <q-input
         v-model="salary"
         label="Salary per month"
@@ -38,7 +38,7 @@
       />
 
       <q-btn
-        label="Submit"
+        label="Save"
         type="submit"
         color="primary"
         class="q-mb-md"
@@ -50,6 +50,7 @@
 </template>
 
 <script setup lang="ts">
+import { useQuasar } from 'quasar';
 import { getSalaryDetails, saveSalaryDetails } from 'src/api/SalaryService';
 import { onMounted, ref } from 'vue';
 
@@ -57,6 +58,8 @@ let salary = ref(0);
 let workHours = ref(40);
 let workWeeks = ref(4);
 let workDays = ref(5);
+
+const $q = useQuasar();
 
 onMounted(() => {
   const salaryDetails = getSalaryDetails();
@@ -72,7 +75,11 @@ const submitSalary = (e: Event) => {
   e.preventDefault();
 
   if (!salary.value || !workHours.value || !workWeeks.value) {
-    alert('Please enter all the details');
+    $q.notify({
+      message: 'Please enter all the details',
+      color: 'negative',
+      position: 'top',
+    });
     return;
   }
 
@@ -84,9 +91,17 @@ const submitSalary = (e: Event) => {
   });
 
   if (updatedSalary) {
-    alert('Salary details saved successfully');
+    $q.notify({
+      message: 'Salary details saved',
+      color: 'positive',
+      position: 'top',
+    });
   } else {
-    alert('Error saving salary details');
+    $q.notify({
+      message: 'Error saving salary details',
+      color: 'negative',
+      position: 'top',
+    });
   }
 };
 </script>

@@ -74,12 +74,18 @@ import plannedExpenseDialog from 'src/components/plannedExpenseDialog.vue';
 const plannedExpenses: Ref<PlannedExpense[]> = ref([]);
 const $q = useQuasar();
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 let salaryDetails: SalaryDetails;
 
 onMounted(() => {
   const storedSalaryDetails = getSalaryDetails();
   if (!storedSalaryDetails) {
-    alert('Please enter your salary details first');
+    $q.notify({
+      message: 'Please enter your salary details',
+      color: 'warning',
+      icon: 'warning',
+      position: 'top',
+    });
     useRouter().push('/settings');
     return;
   }
@@ -97,7 +103,12 @@ const deleteExpense = (plannedExpense: PlannedExpense) => {
   const updatedPlannedExpenses = removePlannedExpense(plannedExpense);
 
   if (!updatedPlannedExpenses) {
-    alert('Error deleting expense');
+    $q.notify({
+      message: 'Error deleting expense',
+      color: 'negative',
+      icon: 'error',
+      position: 'top',
+    });
     return;
   }
 
@@ -121,13 +132,23 @@ const onNewPlannedExpenseClick = () => {
       const newPlannedExpense = addPlannedExpense(plannedExpense);
 
       if (!newPlannedExpense) {
-        alert('Error adding expense');
+        $q.notify({
+          message: 'Error adding expense',
+          color: 'negative',
+          icon: 'error',
+          position: 'top',
+        });
         return;
       }
 
       plannedExpenses.value.push(newPlannedExpense);
 
-      alert('Expense added successfully');
+      $q.notify({
+        message: 'Expense added successfully',
+        color: 'positive',
+        icon: 'done',
+        position: 'top',
+      });
     }
   );
 };
@@ -157,13 +178,23 @@ const onEditPlannedExpenseClick = (plannedExpense: PlannedExpense) => {
       );
 
       if (!updatedPlannedExpenses) {
-        alert('Error updating expense');
+        $q.notify({
+          message: 'Error updating expense',
+          color: 'negative',
+          icon: 'error',
+          position: 'top',
+        });
         return;
       }
 
       plannedExpenses.value = updatedPlannedExpenses;
 
-      alert('Expense updated successfully');
+      $q.notify({
+        message: 'Expense updated successfully',
+        color: 'positive',
+        icon: 'done',
+        position: 'top',
+      });
     }
   );
 };
