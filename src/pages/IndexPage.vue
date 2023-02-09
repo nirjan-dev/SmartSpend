@@ -24,7 +24,7 @@
           </q-item-label>
 
           <q-item-label class="text-negative text-bold q-mb-sm">
-            {{ plannedExpense.amount }} -
+            {{ plannedExpense.amount }} {{ salaryDetails.currency }} -
             {{ expenseToTime(plannedExpense.amount) }}
           </q-item-label>
 

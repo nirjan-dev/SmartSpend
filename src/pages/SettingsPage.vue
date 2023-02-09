@@ -14,6 +14,14 @@
       />
 
       <q-input
+        v-model="currency"
+        label="Currency"
+        type="text"
+        filled
+        class="q-mb-md"
+      />
+
+      <q-input
         v-model="workHours"
         label="Working hours per week"
         type="number"
@@ -58,6 +66,7 @@ let salary = ref(0);
 let workHours = ref(40);
 let workWeeks = ref(4);
 let workDays = ref(5);
+let currency = ref('USD');
 
 const $q = useQuasar();
 
@@ -88,6 +97,7 @@ const submitSalary = async (e: Event) => {
     workHours: workHours.value,
     workWeeks: workWeeks.value,
     workDays: workDays.value,
+    currency: currency.value,
   });
 
   if (updatedSalary) {

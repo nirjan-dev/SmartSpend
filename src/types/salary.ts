@@ -3,4 +3,5 @@ export type SalaryDetails = {
   workHours: number;
   workDays: number;
   workWeeks: number;
+  currency: string;
 };
