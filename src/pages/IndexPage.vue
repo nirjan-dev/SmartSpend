@@ -11,35 +11,51 @@
         class="q-mb-md border-bottom"
       >
         <q-item-section class="q-py-md">
-          <q-item-label class="text-h6 q-mb-sm">{{
-            plannedExpense.name
-          }}</q-item-label>
-          <q-item-label class="text-negative text-bold">
+          <q-item-label class="text-h6 q-mb-sm"
+            >{{ plannedExpense.name }}
+            <q-icon name="link" class="q-ml-md q-mr-sm" />
+            <a :href="plannedExpense.link" target="_blank">
+              {{ plannedExpense.link }}
+            </a>
+          </q-item-label>
+
+          <q-item-label caption class="q-mb-sm">
+            {{ getFormmattedDate(plannedExpense.dateAdded) }}
+          </q-item-label>
+
+          <q-item-label class="text-negative text-bold q-mb-sm">
             {{ plannedExpense.amount }} -
             {{ expenseToTime(plannedExpense.amount) }}
           </q-item-label>
 
-          <q-item-label caption class="q-mb-sm">
-            <a :href="plannedExpense.link" target="_blank">
-              {{ plannedExpense.link }}
-            </a>
+          <q-item-label class="q-mt-lg">
+            <q-btn
+              color="negative"
+              icon="shopping_cart"
+              outline
+              label="Bought"
+              @click="onEditPlannedExpenseClick(plannedExpense)"
+              class="q-mr-md"
+            />
+
+            <q-btn
+              color="positive"
+              icon="delete"
+              outline
+              label="Archive"
+              @click="deleteExpense(plannedExpense)"
+            />
           </q-item-label>
         </q-item-section>
         <q-item-section side>
           <q-btn
             round
-            color="primary"
             icon="edit"
             @click="onEditPlannedExpenseClick(plannedExpense)"
             class="q-mb-md"
           />
 
-          <q-btn
-            round
-            color="negative"
-            icon="delete"
-            @click="deleteExpense(plannedExpense)"
-          />
+          <q-btn round icon="delete" @click="deleteExpense(plannedExpense)" />
         </q-item-section>
       </q-item>
     </q-list>
@@ -64,9 +80,12 @@ import {
   getTimeFromAmount,
   removePlannedExpense,
   updatePlannedExpense,
-} from 'src/api/expenseService';
+} from 'src/api/plannedExpenseService';
 import { getSalaryDetails } from 'src/api/SalaryService';
-import { PlannedExpense } from 'src/types/expenses';
+import {
+  PlannedExpense,
+  PlannedExpenseFromUser,
+} from 'src/types/PllannedExpense';
 import { SalaryDetails } from 'src/types/salary';
 import { useQuasar } from 'quasar';
 import plannedExpenseDialog from 'src/components/plannedExpenseDialog.vue';
@@ -114,6 +133,21 @@ const deleteExpense = async (plannedExpense: PlannedExpense) => {
   }
 
   plannedExpenses.value = updatedPlannedExpenses;
+
+  $q.notify({
+    message: 'Expense deleted successfully',
+    color: 'positive',
+    icon: 'done',
+    position: 'top',
+  });
+};
+
+const getFormmattedDate = (date: string) => {
+  return new Date(date).toLocaleDateString('en-Us', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 };
 
 const onNewPlannedExpenseClick = () => {

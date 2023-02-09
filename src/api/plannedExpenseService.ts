@@ -1,7 +1,8 @@
 import { Preferences } from '@capacitor/preferences';
 import { I } from 'app/src-capacitor/www/assets/index.69e3a62d';
 import { getSalaryDetails } from 'src/api/SalaryService';
-import { PlannedExpense } from 'src/types/expenses';
+import { PlannedExpense } from 'src/types/PllannedExpense';
+import { PlannedExpenseFromUser } from 'src/types/PllannedExpense';
 import { SalaryDetails } from 'src/types/salary';
 
 export const getPlannedExpenses = async () => {
@@ -18,14 +19,13 @@ export const getPlannedExpenses = async () => {
   return plannedExpenses;
 };
 
-export const addPlannedExpense = async (
-  expense: Omit<PlannedExpense, 'id'>
-) => {
+export const addPlannedExpense = async (expense: PlannedExpenseFromUser) => {
   const plannedExpenses = await getPlannedExpenses();
 
   const expenseWithId = {
     ...expense,
     id: crypto.randomUUID(),
+    dateAdded: new Date().toISOString(),
   };
 
   plannedExpenses.push(expenseWithId);

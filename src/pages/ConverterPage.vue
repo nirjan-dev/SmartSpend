@@ -78,7 +78,10 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { getAmountFromTime, getTimeFromAmount } from 'src/api/expenseService';
+import {
+  getAmountFromTime,
+  getTimeFromAmount,
+} from 'src/api/plannedExpenseService';
 import { getSalaryDetails } from 'src/api/SalaryService';
 import { SalaryDetails } from 'src/types/salary';
 import { onMounted, reactive, ref } from 'vue';
