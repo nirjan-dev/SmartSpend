@@ -1,4 +1,5 @@
 import { Preferences } from '@capacitor/preferences';
+import { I } from 'app/src-capacitor/www/assets/index.69e3a62d';
 import { getSalaryDetails } from 'src/api/SalaryService';
 import { PlannedExpense } from 'src/types/expenses';
 import { SalaryDetails } from 'src/types/salary';
@@ -136,26 +137,37 @@ export const getTimeFromHours = (
   let timeWithSeparators = '';
 
   if (years) {
-    timeWithSeparators += `${years.toFixed(2)} years `;
+    timeWithSeparators += `${getFormattedStringFromNumber(years, 'year')} `;
   }
 
   if (months) {
-    timeWithSeparators += `${months.toFixed(2)} months `;
+    timeWithSeparators += `${getFormattedStringFromNumber(months, 'month')} `;
   }
 
   if (weeks) {
-    timeWithSeparators += `${weeks.toFixed(2)} weeks `;
+    timeWithSeparators += `${getFormattedStringFromNumber(weeks, 'week')} `;
   }
 
   if (days) {
-    timeWithSeparators += `${days.toFixed(2)} days `;
+    timeWithSeparators += `${getFormattedStringFromNumber(days, 'day')} `;
   }
 
   if (hoursLeft) {
-    timeWithSeparators += `${hoursLeft.toFixed(2)} hours `;
+    timeWithSeparators += `${getFormattedStringFromNumber(hoursLeft, 'hour')}`;
   }
 
   return timeWithSeparators;
+};
+
+const getFormattedStringFromNumber = (number: number, timePeriod: string) => {
+  const numberPart = number % 1 !== 0 ? number.toFixed(1) : number;
+
+  let periodPart = timePeriod;
+  if (number > 1) {
+    periodPart = `${timePeriod}s`;
+  }
+
+  return `${numberPart} ${periodPart}`;
 };
 
 export const getAmountFromTime = (
