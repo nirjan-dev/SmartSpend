@@ -1,7 +1,7 @@
 <template>
-  <q-page class="q-px-md">
+  <q-page>
     <!-- Title -->
-    <h1 class="text-h5">Planned expenses</h1>
+    <h1 class="text-h5 text-center">Planned expenses</h1>
 
     <!-- List of planned expenses -->
     <q-list class="q-mt-md" separator>
@@ -13,8 +13,8 @@
         <q-item-section class="q-py-md">
           <q-item-label class="text-h6 q-mb-sm"
             >{{ plannedExpense.name }}
-            <q-icon name="link" class="q-ml-md q-mr-sm" />
-            <a :href="plannedExpense.link" target="_blank">
+            <a class="text-caption" :href="plannedExpense.link" target="_blank">
+              <q-icon name="link" size="xs" class="q-ml-md" />
               {{ plannedExpense.link }}
             </a>
           </q-item-label>
@@ -34,16 +34,15 @@
               icon="shopping_cart"
               outline
               label="Bought"
-              @click="onEditPlannedExpenseClick(plannedExpense)"
+              @click="onBoughtClick(plannedExpense)"
               class="q-mr-md"
             />
 
             <q-btn
-              color="positive"
               icon="delete"
               outline
               label="Archive"
-              @click="deleteExpense(plannedExpense)"
+              @click="onArchiveClick(plannedExpense)"
             />
           </q-item-label>
         </q-item-section>
@@ -76,8 +75,11 @@ import { onMounted, reactive, Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import {
   addPlannedExpense,
+  getActivePlannedExpenses,
   getPlannedExpenses,
   getTimeFromAmount,
+  markPlannedExpenseAsArchived,
+  markPlannedExpenseAsBought,
   removePlannedExpense,
   updatePlannedExpense,
 } from 'src/api/plannedExpenseService';
@@ -111,7 +113,7 @@ onMounted(async () => {
   }
 
   salaryDetails = reactive(storedSalaryDetails);
-  plannedExpenses.value = await getPlannedExpenses();
+  plannedExpenses.value = await getActivePlannedExpenses();
 });
 
 const expenseToTime = (amount: number) => {
@@ -240,5 +242,55 @@ const onEditPlannedExpenseClick = (plannedExpense: PlannedExpense) => {
       });
     }
   );
+};
+
+const onBoughtClick = async (plannedExpense: PlannedExpense) => {
+  const updatedPlannedExpenses = await markPlannedExpenseAsBought(
+    plannedExpense
+  );
+
+  if (!updatedPlannedExpenses) {
+    $q.notify({
+      message: 'Error updating expense',
+      color: 'negative',
+      icon: 'error',
+      position: 'top',
+    });
+    return;
+  }
+
+  plannedExpenses.value = updatedPlannedExpenses;
+
+  $q.notify({
+    message: 'Marked Expense as bought',
+    color: 'positive',
+    icon: 'done',
+    position: 'top',
+  });
+};
+
+const onArchiveClick = async (plannedExpense: PlannedExpense) => {
+  const updatedPlannedExpenses = await markPlannedExpenseAsArchived(
+    plannedExpense
+  );
+
+  if (!updatedPlannedExpenses) {
+    $q.notify({
+      message: 'Error updating expense',
+      color: 'negative',
+      icon: 'error',
+      position: 'top',
+    });
+    return;
+  }
+
+  plannedExpenses.value = updatedPlannedExpenses;
+
+  $q.notify({
+    message: 'Archived Expense',
+    color: 'positive',
+    icon: 'done',
+    position: 'top',
+  });
 };
 </script>

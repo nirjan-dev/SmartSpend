@@ -19,6 +19,36 @@ export const getPlannedExpenses = async () => {
   return plannedExpenses;
 };
 
+export const getActivePlannedExpenses = async () => {
+  const plannedExpenses = await getPlannedExpenses();
+
+  const activePlannedExpenses = plannedExpenses.filter(
+    (expense) => !expense.dateArchived && !expense.datePurchased
+  );
+
+  return activePlannedExpenses;
+};
+
+export const getBoughtPlannedExpenses = async () => {
+  const plannedExpenses = await getPlannedExpenses();
+
+  const boughtPlannedExpenses = plannedExpenses.filter(
+    (expense) => expense.datePurchased
+  );
+
+  return boughtPlannedExpenses;
+};
+
+export const getArchivedPlannedExpenses = async () => {
+  const plannedExpenses = await getPlannedExpenses();
+
+  const archivedPlannedExpenses = plannedExpenses.filter(
+    (expense) => expense.dateArchived
+  );
+
+  return archivedPlannedExpenses;
+};
+
 export const addPlannedExpense = async (expense: PlannedExpenseFromUser) => {
   const plannedExpenses = await getPlannedExpenses();
 
@@ -185,4 +215,36 @@ export const getAmountFromTime = (
   const amountToPay = time * salaryPerHour;
 
   return amountToPay;
+};
+
+export const markPlannedExpenseAsBought = async (
+  plannedExpense: PlannedExpense
+) => {
+  plannedExpense.datePurchased = new Date().toISOString();
+
+  const updatedPlannedExpenses = await updatePlannedExpense(plannedExpense);
+
+  if (!updatedPlannedExpenses) {
+    return null;
+  }
+
+  const activePlannedExpenses = await getActivePlannedExpenses();
+
+  return activePlannedExpenses;
+};
+
+export const markPlannedExpenseAsArchived = async (
+  plannedExpense: PlannedExpense
+) => {
+  plannedExpense.dateArchived = new Date().toISOString();
+
+  const updatedPlannedExpenses = await updatePlannedExpense(plannedExpense);
+
+  if (!updatedPlannedExpenses) {
+    return null;
+  }
+
+  const activePlannedExpenses = await getActivePlannedExpenses();
+
+  return activePlannedExpenses;
 };
