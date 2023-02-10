@@ -35,7 +35,7 @@
               outline
               label="Bought"
               @click="onBoughtClick(plannedExpense)"
-              class="q-mr-md"
+              class="q-mr-sm"
             />
 
             <q-btn

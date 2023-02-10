@@ -3,7 +3,14 @@
     <q-page-container>
       <q-header elevated>
         <q-toolbar>
-          <q-toolbar-title class="text-center">Smart Spend</q-toolbar-title>
+          <q-toolbar-title class="text-center">
+            <img
+              src="/default-monochrome.png"
+              class="q-my-sm inline-block"
+              height="30"
+              alt=""
+            />
+          </q-toolbar-title>
         </q-toolbar>
       </q-header>
 
