@@ -153,6 +153,7 @@ const getFormmattedDate = (date: string) => {
 };
 
 const onNewPlannedExpenseClick = () => {
+  console.log('clickkkk');
   $q.dialog({
     component: plannedExpenseDialog,
     componentProps: {
@@ -170,6 +171,7 @@ const onNewPlannedExpenseClick = () => {
         link: data.link,
       };
 
+      console.log('adding planned expense', plannedExpense);
       const newPlannedExpense = await addPlannedExpense(plannedExpense);
 
       if (!newPlannedExpense) {

@@ -1,14 +1,13 @@
-import { Preferences } from '@capacitor/preferences';
-import { I } from 'app/src-capacitor/www/assets/index.69e3a62d';
 import { getSalaryDetails } from 'src/api/SalaryService';
 import { PlannedExpense } from 'src/types/PllannedExpense';
 import { PlannedExpenseFromUser } from 'src/types/PllannedExpense';
 import { SalaryDetails } from 'src/types/salary';
+import { Storage } from '@capacitor/core';
 
 export const getPlannedExpenses = async () => {
   let plannedExpenses: PlannedExpense[] = [];
 
-  const plannedExpensesFromStorage = await Preferences.get({
+  const plannedExpensesFromStorage = await Storage.get({
     key: 'SmartSpendPlannedExpenses',
   });
 
@@ -54,13 +53,15 @@ export const addPlannedExpense = async (expense: PlannedExpenseFromUser) => {
 
   const expenseWithId = {
     ...expense,
-    id: crypto.randomUUID(),
+    id: Math.random().toString(36).substr(2, 9),
     dateAdded: new Date().toISOString(),
   };
 
   plannedExpenses.push(expenseWithId);
 
-  await Preferences.set({
+  console.log('plannedExpenses', plannedExpenses);
+
+  await Storage.set({
     key: 'SmartSpendPlannedExpenses',
     value: JSON.stringify(plannedExpenses),
   });
@@ -75,7 +76,7 @@ export const removePlannedExpense = async (expense: PlannedExpense) => {
     (expenseItem) => expenseItem.id !== expense.id
   );
 
-  await Preferences.set({
+  await Storage.set({
     key: 'SmartSpendPlannedExpenses',
     value: JSON.stringify(filteredPlannedExpenses),
   });
@@ -94,7 +95,7 @@ export const updatePlannedExpense = async (expense: PlannedExpense) => {
     return expenseItem;
   });
 
-  await Preferences.set({
+  await Storage.set({
     key: 'SmartSpendPlannedExpenses',
     value: JSON.stringify(updatedPlannedExpenses),
   });

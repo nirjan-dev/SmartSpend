@@ -1,10 +1,10 @@
-import { Preferences } from '@capacitor/preferences';
 import { SalaryDetails } from 'src/types/salary';
+import { Storage } from '@capacitor/core';
 
 export const getSalaryDetails = async () => {
   let salaryDetails: SalaryDetails;
 
-  const salaryDetailsFromStorage = await Preferences.get({
+  const salaryDetailsFromStorage = await Storage.get({
     key: 'SmartSpendSalaryDetails',
   });
 
@@ -18,7 +18,7 @@ export const getSalaryDetails = async () => {
 };
 
 export const saveSalaryDetails = async (salaryDetails: SalaryDetails) => {
-  await Preferences.set({
+  await Storage.set({
     key: 'SmartSpendSalaryDetails',
     value: JSON.stringify(salaryDetails),
   });

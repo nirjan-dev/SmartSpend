@@ -73,6 +73,8 @@ const $q = useQuasar();
 onMounted(async () => {
   const salaryDetails = await getSalaryDetails();
 
+  console.log('Salary Dettails page');
+
   if (salaryDetails) {
     salary.value = salaryDetails.salary;
     workHours.value = salaryDetails.workHours;
