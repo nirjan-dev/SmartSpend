@@ -3,8 +3,5 @@
   "appName": "SmartSpend",
   "bundledWebRuntime": false,
   "npmClient": "npm",
-  "webDir": "www",
-  "server": {
-    "url": "http://192.168.1.76:9500"
-  }
+  "webDir": "www"
 }
