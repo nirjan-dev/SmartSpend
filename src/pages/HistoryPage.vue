@@ -40,16 +40,30 @@
                 </a>
               </q-item-label>
 
+              <q-item-label>
+                <q-rating
+                  v-model="plannedExpense.rating"
+                  readonly
+                  color="primary"
+                />
+              </q-item-label>
+
               <q-item-label caption class="q-mb-sm">
                 {{ getFormmattedDate(plannedExpense.datePurchased) }}
               </q-item-label>
 
-              <q-item-label class="text-negative text-bold q-mb-sm">
+              <q-item-label class="text-bold q-mb-sm">
                 {{ plannedExpense.amount }} {{ salaryDetails.currency }} -
                 {{ expenseToTime(plannedExpense.amount) }}
               </q-item-label>
             </q-item-section>
             <q-item-section side>
+              <q-btn
+                round
+                icon="edit"
+                @click="onEditPlannedExpenseClick(plannedExpense)"
+                class="q-mb-md"
+              />
               <q-btn
                 round
                 icon="delete"
@@ -85,12 +99,18 @@
                 {{ getFormmattedDate(plannedExpense.dateArchived) }}
               </q-item-label>
 
-              <q-item-label class="text-negative text-bold q-mb-sm">
+              <q-item-label class="text-bold q-mb-sm">
                 {{ plannedExpense.amount }} {{ salaryDetails.currency }} -
                 {{ expenseToTime(plannedExpense.amount) }}
               </q-item-label>
             </q-item-section>
             <q-item-section side>
+              <q-btn
+                round
+                icon="edit"
+                @click="onEditPlannedExpenseClick(plannedExpense)"
+                class="q-mb-md"
+              />
               <q-btn
                 round
                 icon="delete"
@@ -112,11 +132,13 @@ import {
   getBoughtPlannedExpenses,
   getTimeFromAmount,
   removePlannedExpense,
+  updatePlannedExpense,
 } from 'src/api/plannedExpenseService';
 import { getSalaryDetails } from 'src/api/SalaryService';
 import { PlannedExpense } from 'src/types/PllannedExpense';
 import { SalaryDetails } from 'src/types/salary';
 import { useQuasar } from 'quasar';
+import plannedExpenseDialog from 'src/components/plannedExpenseDialog.vue';
 
 const $q = useQuasar();
 const router = useRouter();
@@ -173,6 +195,59 @@ const deleteExpense = async (plannedExpense: PlannedExpense) => {
     icon: 'done',
     position: 'top',
   });
+};
+
+const onEditPlannedExpenseClick = (plannedExpense: PlannedExpense) => {
+  // edit the planned expense using the plannedExpense Dialog
+
+  $q.dialog({
+    component: plannedExpenseDialog,
+    componentProps: {
+      ...plannedExpense,
+      mode: 'edit',
+    },
+  }).onOk(
+    async (data: {
+      expenseName: string;
+      expenseAmount: number;
+      link: string;
+      rating?: number;
+    }) => {
+      console.log(data);
+
+      const updatedPlannedExpense = {
+        ...plannedExpense,
+        name: data.expenseName,
+        amount: data.expenseAmount,
+        link: data.link,
+        rating: data.rating,
+      };
+
+      const updatedPlannedExpenses = await updatePlannedExpense(
+        updatedPlannedExpense
+      );
+
+      if (!updatedPlannedExpenses) {
+        $q.notify({
+          message: 'Error updating expense',
+          color: 'negative',
+          icon: 'error',
+          position: 'top',
+        });
+        return;
+      }
+
+      boughtPlannedExpenses.value = await getBoughtPlannedExpenses();
+      archivedPlannedExpenses.value = await getArchivedPlannedExpenses();
+
+      $q.notify({
+        message: 'Expense updated successfully',
+        color: 'positive',
+        icon: 'done',
+        position: 'top',
+      });
+    }
+  );
 };
 
 const getFormmattedDate = (date: string) => {

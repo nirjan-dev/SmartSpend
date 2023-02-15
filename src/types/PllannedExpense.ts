@@ -6,6 +6,7 @@ export type PlannedExpense = {
   dateAdded: string;
   datePurchased?: string;
   dateArchived?: string;
+  rating?: number;
 };
 
 export type PlannedExpenseWithoutId = Omit<PlannedExpense, 'id'>;

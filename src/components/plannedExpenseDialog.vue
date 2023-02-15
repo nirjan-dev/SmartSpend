@@ -31,6 +31,14 @@
               filled
               class="q-mb-md"
             />
+
+            <q-rating
+              v-if="props.mode === 'edit' && datePurchased"
+              v-model="rating"
+              size="2em"
+              :max="5"
+              color="primary"
+            />
           </q-form>
         </q-card-section>
         <q-card-actions align="right">
@@ -59,11 +67,15 @@ const props = defineProps<{
   amount: number;
   link: string;
   mode: 'add' | 'edit';
+  rating?: number;
+  datePurchased?: string;
 }>();
 
 const name = ref(props.name ?? null);
 const amount = ref(props.amount ?? null);
 const link = ref(props.link ?? null);
+const rating = ref(props.rating ?? null);
+const datePurchased = ref(props.datePurchased ?? null);
 
 const title = computed(() => {
   return props.mode === 'add'
@@ -76,6 +88,7 @@ function onOKClick() {
     expenseName: name.value,
     expenseAmount: amount.value,
     link: link.value,
+    rating: rating.value,
   });
 }
 </script>
