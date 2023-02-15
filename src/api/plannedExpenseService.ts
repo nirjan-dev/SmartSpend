@@ -131,20 +131,32 @@ export const getHoursFromAmount = (
   return hoursToPay;
 };
 
-export const getTimeFromHours = (
-  hours: number,
-  salaryDetails: SalaryDetails
-) => {
+const getWorkingHoursPerTimePeriods = (salaryDetails: SalaryDetails) => {
   const {
     workDays: workDaysPerWeek,
     workHours: workHoursPerWeek,
     workWeeks: numberOfWorkingWeeks,
   } = salaryDetails;
 
-  const hoursPerDay = workHoursPerWeek / workDaysPerWeek; // 8
-  const hoursPerWeek = workHoursPerWeek; // 40
-  const hoursPerMonth = hoursPerWeek * numberOfWorkingWeeks; // 160
-  const hoursPerYear = hoursPerMonth * 12; // 1920
+  const hoursPerDay = workHoursPerWeek / workDaysPerWeek;
+  const hoursPerWeek = workHoursPerWeek;
+  const hoursPerMonth = hoursPerWeek * numberOfWorkingWeeks;
+  const hoursPerYear = hoursPerMonth * 12;
+
+  return {
+    hoursPerDay,
+    hoursPerWeek,
+    hoursPerMonth,
+    hoursPerYear,
+  };
+};
+
+export const getTimeFromHours = (
+  hours: number,
+  salaryDetails: SalaryDetails
+) => {
+  const { hoursPerDay, hoursPerWeek, hoursPerMonth, hoursPerYear } =
+    getWorkingHoursPerTimePeriods(salaryDetails);
 
   const years = Math.floor(hours / hoursPerYear);
   const months = Math.floor((hours - years * hoursPerYear) / hoursPerMonth);
@@ -202,7 +214,13 @@ const getFormattedStringFromNumber = (number: number, timePeriod: string) => {
 };
 
 export const getAmountFromTime = (
-  time: number,
+  time: {
+    hours: number;
+    days: number;
+    weeks: number;
+    months: number;
+    years: number;
+  },
   salaryDetails: SalaryDetails
 ) => {
   if (!salaryDetails) {
@@ -210,12 +228,36 @@ export const getAmountFromTime = (
   }
 
   const { salary, workHours, workWeeks } = salaryDetails;
+  const hoursFromTime = getHoursFromTime(time, salaryDetails);
 
   const salaryPerHour = salary / (workHours * workWeeks);
 
-  const amountToPay = time * salaryPerHour;
+  const amountToPay = hoursFromTime * salaryPerHour;
 
   return amountToPay;
+};
+
+const getHoursFromTime = (
+  time: {
+    hours: number;
+    days: number;
+    weeks: number;
+    months: number;
+    years: number;
+  },
+  salaryDetails: SalaryDetails
+) => {
+  const { hoursPerDay, hoursPerWeek, hoursPerMonth, hoursPerYear } =
+    getWorkingHoursPerTimePeriods(salaryDetails);
+
+  const hours =
+    time.hours +
+    time.days * hoursPerDay +
+    time.weeks * hoursPerWeek +
+    time.months * hoursPerMonth +
+    time.years * hoursPerYear;
+
+  return hours;
 };
 
 export const markPlannedExpenseAsBought = async (

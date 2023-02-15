@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="text-h5">Convert money to time</h1>
+    <h1 class="text-h5">Convert between money and time</h1>
 
     <q-form class="col-6">
       <q-input
@@ -23,7 +23,7 @@
         readonly
       />
 
-      <!-- <q-input
+      <q-input
         v-model="hours"
         label="Hours"
         type="number"
@@ -71,7 +71,7 @@
         name="years"
         class="q-mb-md"
         @update:model-value="onTimeUpdate"
-      /> -->
+      />
     </q-form>
   </div>
 </template>
@@ -115,19 +115,25 @@ onMounted(async () => {
 });
 
 const getTimeObjectFromTotalTime = (totalTime: string) => {
-  const years = Number(totalTime.split('years')[0]);
-  const months = Number(totalTime.split('months')[0].split('years')[1]);
-  const weeks = Number(totalTime.split('weeks')[0].split('months')[1]);
-  const days = Number(totalTime.split('days')[0].split('weeks')[1]);
-  const hours = Number(totalTime.split('hours')[0].split('days')[1]);
+  // convert a string like 1 year 2 months 3 weeks 4 days 5 hours to an object
 
-  return {
-    years,
-    months,
-    weeks,
-    days,
-    hours,
+  const timePeriods = {
+    year: 0,
+    month: 0,
+    week: 0,
+    day: 0,
+    hour: 0,
   };
+
+  const regex = /(\d*\.?\d+)\s*(year|month|week|day|hour)s?/g;
+  let match;
+
+  while ((match = regex.exec(totalTime)) !== null) {
+    const [_, value, period] = match;
+    (timePeriods as any)[period] = parseFloat(value);
+  }
+
+  return timePeriods;
 };
 
 const onAmountUpdate = (value: number) => {
@@ -136,22 +142,27 @@ const onAmountUpdate = (value: number) => {
   const timeSections = getTimeObjectFromTotalTime(totalTime);
 
   time.value = totalTime;
-  hours.value = timeSections.hours;
-  days.value = timeSections.days;
-  weeks.value = timeSections.weeks;
-  months.value = timeSections.months;
-  years.value = timeSections.years;
+  hours.value = timeSections.hour;
+  days.value = timeSections.day;
+  weeks.value = timeSections.week;
+  months.value = timeSections.month;
+  years.value = timeSections.year;
 };
 
 const onTimeUpdate = () => {
-  const totalTimeInHours =
-    hours.value +
-    days.value * 24 +
-    weeks.value * 24 * 7 +
-    months.value * 24 * 7 * 4 +
-    years.value * 24 * 7 * 4 * 12;
+  amount.value =
+    getAmountFromTime(
+      {
+        hours: Number(hours.value),
+        days: Number(days.value),
+        weeks: Number(weeks.value),
+        months: Number(months.value),
+        years: Number(years.value),
+      },
+      salaryDetails
+    ) || 0;
 
-  amount.value = getAmountFromTime(totalTimeInHours, salaryDetails) || 0;
+  onAmountUpdate(amount.value);
 };
 </script>
 
