@@ -61,6 +61,7 @@
 import { useQuasar } from 'quasar';
 import { getSalaryDetails, saveSalaryDetails } from 'src/api/SalaryService';
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 let salary = ref(0);
 let workHours = ref(40);
@@ -69,6 +70,7 @@ let workDays = ref(5);
 let currency = ref('USD');
 
 const $q = useQuasar();
+const router = useRouter();
 
 onMounted(async () => {
   const salaryDetails = await getSalaryDetails();
@@ -108,6 +110,7 @@ const submitSalary = async (e: Event) => {
       color: 'positive',
       position: 'top',
     });
+    router.push('/');
   } else {
     $q.notify({
       message: 'Error saving salary details',

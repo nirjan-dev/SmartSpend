@@ -25,7 +25,11 @@
     </q-item-label>
 
     <!-- List of planned expenses -->
-    <q-list class="q-mt-md" separator>
+    <q-list
+      class="q-mt-md"
+      separator
+      v-if="sortedPlannedExpenses && sortedPlannedExpenses.length > 0"
+    >
       <q-item
         v-for="plannedExpense in sortedPlannedExpenses"
         :key="plannedExpense.id"
@@ -79,6 +83,49 @@
         </q-item-section>
       </q-item>
     </q-list>
+
+    <!-- Empty state -->
+    <div v-else class="q-mt-md">
+      <q-card class="bg-grey-2">
+        <q-card-section class="row items-center">
+          <!-- instructions -->
+          <div class="q-mt-md">
+            <p>
+              To add a new planned expense, click the button in the bottom right
+              corner.
+            </p>
+
+            <p>
+              Once, you add an expense try to keep it in here without buying it
+              for at least a week so you can be sure that you really need it.
+            </p>
+
+            <p>
+              If you buy an expense, click the "Bought" button. This will remove
+              the expense from the list and move it to the History page. Once
+              you have bought an item you can also rate it by going to it on the
+              History page and editing it.
+            </p>
+
+            <p>
+              If you don't buy an expense, click the "Archive" button. This will
+              remove the expense from the list and also move it to the History
+              page.
+            </p>
+
+            <p>
+              After creating a planned expense, You can also edit an expense by
+              clicking the "Edit" button next to it.
+            </p>
+
+            <p>
+              You can also delete an expense by clicking the "Delete" button
+              next to it. This won't move it to the History page.
+            </p>
+          </div>
+        </q-card-section>
+      </q-card>
+    </div>
 
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn
