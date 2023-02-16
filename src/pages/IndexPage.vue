@@ -3,10 +3,31 @@
     <!-- Title -->
     <h1 class="text-h5 text-center">Planned expenses</h1>
 
+    <!-- sorting controls -->
+    <q-item-label class="q-mt-md">
+      <q-select
+        v-model="sortBy"
+        :options="sortByOptions"
+        label="Sort by"
+        filled
+        behavior="menu"
+      />
+    </q-item-label>
+
+    <q-item-label class="q-mt-md">
+      <q-select
+        v-model="sortOrder"
+        :options="sortOrderOptions"
+        label="Sort order"
+        filled
+        behavior="menu"
+      />
+    </q-item-label>
+
     <!-- List of planned expenses -->
     <q-list class="q-mt-md" separator>
       <q-item
-        v-for="plannedExpense in plannedExpenses"
+        v-for="plannedExpense in sortedPlannedExpenses"
         :key="plannedExpense.id"
         class="q-mb-md border-bottom"
       >
@@ -71,7 +92,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, Ref, ref } from 'vue';
+import { computed, onMounted, reactive, Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import {
   addPlannedExpense,
@@ -95,6 +116,11 @@ import plannedExpenseDialog from 'src/components/plannedExpenseDialog.vue';
 const plannedExpenses: Ref<PlannedExpense[]> = ref([]);
 const $q = useQuasar();
 const router = useRouter();
+const sortByOptions = ['Date added', 'Amount'];
+const sortBy = ref(sortByOptions[0]);
+
+const sortOrderOptions = ['Ascending', 'Descending'];
+const sortOrder = ref(sortOrderOptions[0]);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let salaryDetails: SalaryDetails;
@@ -114,6 +140,37 @@ onMounted(async () => {
 
   salaryDetails = reactive(storedSalaryDetails);
   plannedExpenses.value = await getActivePlannedExpenses();
+});
+
+const sortedPlannedExpenses = computed(() => {
+  if (sortBy.value === 'Date added') {
+    // return a sorted plannedExpenses array without mutating the original array and based on the sortOrder
+
+    const sortedPlannedExpenses = [...plannedExpenses.value].sort(
+      (a, b) =>
+        new Date(a.dateAdded).getTime() - new Date(b.dateAdded).getTime()
+    );
+
+    if (sortOrder.value === 'Descending') {
+      sortedPlannedExpenses.reverse();
+    }
+
+    return sortedPlannedExpenses;
+  }
+
+  if (sortBy.value === 'Amount') {
+    const sortedPlannedExpenses = [...plannedExpenses.value].sort(
+      (a, b) => b.amount - a.amount
+    );
+
+    if (sortOrder.value === 'Ascending') {
+      sortedPlannedExpenses.reverse();
+    }
+
+    return sortedPlannedExpenses;
+  }
+
+  return plannedExpenses.value;
 });
 
 const expenseToTime = (amount: number) => {
