@@ -1,7 +1,9 @@
 <template>
   <q-page>
     <!-- Title -->
-    <h1 class="text-h5">Please Enter your monthly salary</h1>
+    <h1 class="text-h5 q-my-lg text-weight-regular" style="opacity: 0.6">
+      Save your monthly salary
+    </h1>
 
     <!-- Form to enter salary -->
     <q-form>

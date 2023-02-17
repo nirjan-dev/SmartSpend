@@ -1,7 +1,9 @@
 <template>
   <q-page>
     <!-- Title -->
-    <h1 class="text-h5 text-center">History</h1>
+    <h1 class="text-h5 q-my-lg text-weight-regular" style="opacity: 0.6">
+      History
+    </h1>
 
     <!-- sorting controls -->
     <q-item-label class="q-mt-md">
@@ -11,6 +13,7 @@
         label="Sort by"
         filled
         behavior="menu"
+        dense
       />
     </q-item-label>
 
@@ -21,6 +24,7 @@
         label="Sort order"
         filled
         behavior="menu"
+        dense
       />
     </q-item-label>
 
@@ -33,30 +37,35 @@
       align="justify"
       narrow-indicator
     >
-      <q-tab name="bought" label="Bought" />
-      <q-tab name="archived" label="Archived" />
+      <q-tab name="bought" class="text-capitalize" label="Bought" />
+      <q-tab name="archived" label="Archived" class="text-capitalize" />
     </q-tabs>
 
     <q-separator />
 
     <q-tab-panels v-model="tab" animated>
-      <q-tab-panel name="bought">
+      <q-tab-panel name="bought" class="q-px-xs">
         <!-- List of planned expenses -->
         <q-list class="q-mt-md" separator>
           <q-item
             v-for="plannedExpense in sortedBoughtPlannedExpenses"
             :key="plannedExpense.id"
-            class="q-mb-md border-bottom"
+            class="q-mb-md border-bottom q-px-sm"
+            dense
           >
             <q-item-section class="q-py-md">
-              <q-item-label class="text-h6 q-mb-sm"
-                >{{ plannedExpense.name }}
+              <q-item-label class="flex items-center"
+                ><span class="text-capitalize text-h6 q-mr-sm">
+                  {{ plannedExpense.name }}
+                </span>
                 <a
+                  v-if="plannedExpense.link"
                   class="text-caption"
+                  style="text-decoration: none"
                   :href="plannedExpense.link"
                   target="_blank"
                 >
-                  <q-icon name="link" size="xs" class="q-ml-md" />
+                  <q-icon name="link" size="xs" />
                   {{ plannedExpense.link }}
                 </a>
               </q-item-label>
@@ -95,7 +104,7 @@
         </q-list>
       </q-tab-panel>
 
-      <q-tab-panel name="archived">
+      <q-tab-panel name="archived" class="q-px-xs">
         <!-- List of planned expenses -->
         <q-list class="q-mt-md" separator>
           <q-item
@@ -104,20 +113,24 @@
             class="q-mb-md border-bottom"
           >
             <q-item-section class="q-py-md">
-              <q-item-label class="text-h6 q-mb-sm"
-                >{{ plannedExpense.name }}
+              <q-item-label class="flex items-center"
+                ><span class="text-capitalize text-h6 q-mr-sm">
+                  {{ plannedExpense.name }}
+                </span>
                 <a
+                  v-if="plannedExpense.link"
                   class="text-caption"
+                  style="text-decoration: none"
                   :href="plannedExpense.link"
                   target="_blank"
                 >
-                  <q-icon name="link" size="xs" class="q-ml-md" />
+                  <q-icon name="link" size="xs" />
                   {{ plannedExpense.link }}
                 </a>
               </q-item-label>
 
               <q-item-label caption class="q-mb-sm">
-                {{ getFormmattedDate(plannedExpense.dateArchived) }}
+                {{ getFormmattedDate(plannedExpense.datePurchased) }}
               </q-item-label>
 
               <q-item-label class="text-bold q-mb-sm">

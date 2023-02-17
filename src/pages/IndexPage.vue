@@ -1,7 +1,9 @@
 <template>
   <q-page>
     <!-- Title -->
-    <h1 class="text-h5 text-center">Planned expenses</h1>
+    <h1 class="text-h5 q-my-lg text-weight-regular" style="opacity: 0.6">
+      Planned expenses
+    </h1>
 
     <!-- sorting controls -->
     <q-item-label class="q-mt-md">
@@ -11,6 +13,7 @@
         label="Sort by"
         filled
         behavior="menu"
+        dense
       />
     </q-item-label>
 
@@ -21,6 +24,7 @@
         label="Sort order"
         filled
         behavior="menu"
+        dense
       />
     </q-item-label>
 
@@ -33,13 +37,22 @@
       <q-item
         v-for="plannedExpense in sortedPlannedExpenses"
         :key="plannedExpense.id"
-        class="q-mb-md border-bottom"
+        class="q-mb-md border-bottom q-px-sm"
+        dense
       >
         <q-item-section class="q-py-md">
-          <q-item-label class="text-h6 q-mb-sm"
-            >{{ plannedExpense.name }}
-            <a class="text-caption" :href="plannedExpense.link" target="_blank">
-              <q-icon name="link" size="xs" class="q-ml-md" />
+          <q-item-label class="flex items-center">
+            <span class="text-capitalize text-h6 q-mr-sm">
+              {{ plannedExpense.name }}
+            </span>
+            <a
+              v-if="plannedExpense.link"
+              class="text-caption"
+              style="text-decoration: none"
+              :href="plannedExpense.link"
+              target="_blank"
+            >
+              <q-icon name="link" size="xs" />
               {{ plannedExpense.link }}
             </a>
           </q-item-label>
@@ -48,28 +61,27 @@
             {{ getFormmattedDate(plannedExpense.dateAdded) }}
           </q-item-label>
 
-          <q-item-label class="text-negative text-bold q-mb-sm">
-            {{ plannedExpense.amount }} {{ salaryDetails.currency }} -
+          <q-item-label class="text-bold q-mb-md">
+            {{ plannedExpense.amount }} {{ salaryDetails.currency }} :
             {{ expenseToTime(plannedExpense.amount) }}
           </q-item-label>
 
-          <q-item-label class="q-mt-lg">
-            <q-btn
-              color="negative"
-              icon="shopping_cart"
-              outline
-              label="Bought"
-              @click="onBoughtClick(plannedExpense)"
-              class="q-mr-sm"
-            />
+          <q-btn
+            color="negative"
+            icon="shopping_cart"
+            outline
+            label="Mark as bought"
+            @click="onBoughtClick(plannedExpense)"
+            class="text-capitalize q-mb-md"
+          />
 
-            <q-btn
-              icon="delete"
-              outline
-              label="Archive"
-              @click="onArchiveClick(plannedExpense)"
-            />
-          </q-item-label>
+          <q-btn
+            icon="delete"
+            outline
+            label="Archive"
+            class="text-capitalize"
+            @click="onArchiveClick(plannedExpense)"
+          />
         </q-item-section>
         <q-item-section side>
           <q-btn

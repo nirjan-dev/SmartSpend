@@ -4,17 +4,15 @@
       <q-header elevated>
         <q-toolbar>
           <q-toolbar-title class="text-center">
-            <img
-              src="/default-monochrome.png"
-              class="q-my-sm inline-block"
-              height="30"
-              alt=""
-            />
+            <q-avatar>
+              <img src="/icon.png" />
+            </q-avatar>
+            Spend Smart
           </q-toolbar-title>
         </q-toolbar>
       </q-header>
 
-      <router-view class="q-px-md" />
+      <router-view class="q-px-sm" />
 
       <q-footer elevated>
         <q-tabs>

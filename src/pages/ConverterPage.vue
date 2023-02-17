@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h1 class="text-h5">Convert between money and time</h1>
+    <h1 class="text-h5 q-my-lg text-weight-regular" style="opacity: 0.6">
+      Convert money and time
+    </h1>
 
     <q-form class="col-6">
       <q-input
