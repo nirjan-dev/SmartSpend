@@ -1,5 +1,17 @@
-<template>
-  <q-page>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Privacy Policy</title>
+    <style>
+      body {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        padding: 1em;
+      }
+    </style>
+  </head>
+  <body>
     <strong>Privacy Policy</strong>
     <p>
       Nirjan Khadka built the Smart Spend app as a Free app. This SERVICE is
@@ -148,69 +160,5 @@
         >App Privacy Policy Generator</a
       >
     </p>
-  </q-page>
-</template>
-
-<script setup lang="ts">
-import { useQuasar } from 'quasar';
-import { getSalaryDetails, saveSalaryDetails } from 'src/api/SalaryService';
-import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
-
-let salary = ref(0);
-let workHours = ref(40);
-let workWeeks = ref(4);
-let workDays = ref(5);
-let currency = ref('USD');
-
-const $q = useQuasar();
-const router = useRouter();
-
-onMounted(async () => {
-  const salaryDetails = await getSalaryDetails();
-
-  console.log('Salary Dettails page');
-
-  if (salaryDetails) {
-    salary.value = salaryDetails.salary;
-    workHours.value = salaryDetails.workHours;
-    workWeeks.value = salaryDetails.workWeeks;
-  }
-});
-
-const submitSalary = async (e: Event) => {
-  e.preventDefault();
-
-  if (!salary.value || !workHours.value || !workWeeks.value) {
-    $q.notify({
-      message: 'Please enter all the details',
-      color: 'negative',
-      position: 'top',
-    });
-    return;
-  }
-
-  const updatedSalary = await saveSalaryDetails({
-    salary: salary.value,
-    workHours: workHours.value,
-    workWeeks: workWeeks.value,
-    workDays: workDays.value,
-    currency: currency.value,
-  });
-
-  if (updatedSalary) {
-    $q.notify({
-      message: 'Salary details saved',
-      color: 'positive',
-      position: 'top',
-    });
-    router.push('/');
-  } else {
-    $q.notify({
-      message: 'Error saving salary details',
-      color: 'negative',
-      position: 'top',
-    });
-  }
-};
-</script>
+  </body>
+</html>
