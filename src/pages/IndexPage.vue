@@ -97,43 +97,41 @@
     </q-list>
 
     <!-- Empty state -->
-    <div v-else class="q-mt-md">
+    <div v-else class="q-mt-xl">
       <q-card class="bg-grey-2">
         <q-card-section class="row items-center">
           <!-- instructions -->
-          <div class="q-mt-md">
-            <p>
-              To add a new planned expense, click the button in the bottom right
-              corner.
-            </p>
+          <div>
+            <h2 class="text-h6">To add an expense:</h2>
+            <ul class="q-pl-md">
+              <li>Click the "Add" button in the bottom right corner</li>
 
-            <p>
-              Once, you add an expense try to keep it in here without buying it
-              for at least a week so you can be sure that you really need it.
-            </p>
+              <li>
+                Wait at least a week before buying it to make sure you really
+                need it
+              </li>
+            </ul>
 
-            <p>
-              If you buy an expense, click the "Bought" button. This will remove
-              the expense from the list and move it to the History page. Once
-              you have bought an item you can also rate it by going to it on the
-              History page and editing it.
-            </p>
+            <h2 class="text-h6">To manage expenses:</h2>
 
-            <p>
-              If you don't buy an expense, click the "Archive" button. This will
-              remove the expense from the list and also move it to the History
-              page.
-            </p>
+            <ul class="q-pl-md">
+              <li>
+                If you buy an expense, click "Bought" to move it to the History
+                page
+              </li>
 
-            <p>
-              After creating a planned expense, You can also edit an expense by
-              clicking the "Edit" button next to it.
-            </p>
+              <li>
+                If you don't buy an expense, click "Archive" to move it to the
+                History page
+              </li>
 
-            <p>
-              You can also delete an expense by clicking the "Delete" button
-              next to it. This won't move it to the History page.
-            </p>
+              <li>Edit an expense by clicking the "Edit" button</li>
+
+              <li>
+                Delete an expense by clicking the "Delete" button (this won't
+                move it to the History page)
+              </li>
+            </ul>
           </div>
         </q-card-section>
       </q-card>

@@ -7,7 +7,7 @@
             <q-avatar>
               <img src="/icon.png" />
             </q-avatar>
-            Spend Smart
+            Smart Spend
           </q-toolbar-title>
         </q-toolbar>
       </q-header>
