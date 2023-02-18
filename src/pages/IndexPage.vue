@@ -176,7 +176,7 @@ const router = useRouter();
 const sortByOptions = ['Date added', 'Amount'];
 const sortBy = ref(sortByOptions[0]);
 
-const sortOrderOptions = ['Ascending', 'Descending'];
+const sortOrderOptions = ['Descending', 'Ascending'];
 const sortOrder = ref(sortOrderOptions[0]);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
