@@ -15,9 +15,10 @@
     "build": "quasar build"
   },
   "dependencies": {
-    "@capacitor/android": "^2.5.0",
-    "@capacitor/cli": "^2.0.0",
-    "@capacitor/core": "^2.0.0",
+    "@capacitor/android": "^4.6.3",
+    "@capacitor/cli": "^4.6.3",
+    "@capacitor/core": "^4.6.3",
+    "@capacitor/preferences": "^4.0.2",
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
     "pinia": "^2.0.11",
