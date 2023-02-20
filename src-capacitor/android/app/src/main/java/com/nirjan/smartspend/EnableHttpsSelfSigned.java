@@ -11,7 +11,7 @@ public class EnableHttpsSelfSigned {
     bridge.getWebView().setWebViewClient(new BridgeWebViewClient(bridge) {
       @Override
       public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error) {
-        handler.proceed();
+        handler.cancel();
       }
     });
   }
