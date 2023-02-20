@@ -14,6 +14,7 @@
               type="text"
               filled
               class="q-mb-md"
+              :rules="[(val) => !!val || 'Field is required']"
             />
 
             <q-input
@@ -22,6 +23,7 @@
               type="number"
               filled
               class="q-mb-md"
+              :rules="[(val) => !!val || 'Field is required']"
             />
 
             <q-input
@@ -30,6 +32,7 @@
               type="text"
               filled
               class="q-mb-md"
+              :rules="[validateLink]"
             />
 
             <q-rating
@@ -57,7 +60,9 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { useDialogPluginComponent } from 'quasar';
+import { useDialogPluginComponent, useQuasar } from 'quasar';
+
+const $q = useQuasar();
 
 const { dialogRef, onDialogOK, onDialogCancel, onDialogHide } =
   useDialogPluginComponent();
@@ -84,12 +89,34 @@ const title = computed(() => {
 });
 
 function onOKClick() {
+  if (!name.value || !amount.value) {
+    $q.notify({
+      type: 'negative',
+      message: 'Please fill in all required fields',
+      position: 'top',
+    });
+    return;
+  }
+
   onDialogOK({
     expenseName: name.value,
     expenseAmount: amount.value,
     link: link.value,
     rating: rating.value,
   });
+}
+
+function validateLink(link?: string) {
+  if (!link) {
+    return true;
+  }
+
+  try {
+    new URL(link);
+    return true;
+  } catch (e) {
+    return 'Link is invalid';
+  }
 }
 </script>
 
